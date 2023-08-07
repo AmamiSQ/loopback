@@ -1,0 +1,33 @@
+FROM node:latest AS backend
+
+WORKDIR /app
+
+#install Loopback CLI globally
+RUN npm install -g @loopback/cli
+
+# install required dependencies for Loopback
+RUN npm install loopback@latest
+
+#install the Loopback MySQL connector
+RUN npm install loopback-connector-mysql2@latest mysql2@latest
+
+#install GraphQL dependencies
+RUN npm install openapi-to-graphql@latest graphql-http@latest
+
+#expose the Loopback port
+EXPOSE 3000
+
+#expose the MySQL port
+EXPOSE 3306
+
+#copy the Loopback app into the container
+COPY ./loopback .
+
+#install app dependencies
+RUN npm install
+
+#copy the initialization script into the container
+COPY init.sql /docker-entrypoint-initdb.d/
+
+#start the Loopback server
+CMD ["npm", "start"]
