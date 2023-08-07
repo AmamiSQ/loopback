@@ -1,0 +1,15 @@
+FROM node:latest AS frontend
+
+WORKDIR /app
+
+#copy the existing Core UI React app into the container
+COPY ./coreui-react ./
+
+#install app dependencies
+RUN npm install
+
+#expose the Core UI React port
+EXPOSE 4000
+
+#start the React server
+CMD ["npm", "start"]
